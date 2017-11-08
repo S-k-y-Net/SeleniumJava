@@ -3,8 +3,10 @@ package com.automation;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import java.util.concurrent.TimeUnit;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,7 +17,7 @@ public class DataSource {
     public static String URL = "http://egov.kz/cms/ru";
     public static String enter = "/html/body/div[2]/div[2]/div[1]/div[2]/div[2]/div/a[1]";
     public static String ecp = "/html/body/div[9]/div[7]/div/div/div[2]/div[1]/a[2]";
-    public static  String chooseSertificate = "//*[@id=\"buttonSelectCert\"]";
+    public static  String chooseSertificate = "#buttonSelectCert";
     public static String enterPassword = "//*[@id=\"signNCAPassword\"]";
     public static String enterXPath = "//*[@id=\"NCApassModal\"]/div[2]/input[1]";
     public static String enterThree = "//*[@id=\"loginButton\"]";
@@ -31,7 +33,12 @@ public class DataSource {
     public static String sign = "button-type button-action ng-scope ng-binding";
 
     public WebDriver RunDriver(){
-        WebDriver driver = new FirefoxDriver();
+
+        System.setProperty("webdriver.gecko.driver", "C:\\Users\\rasulzodam\\Desktop\\geckodriver-v0.19.1-win64\\geckodriver.exe");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\rasulzodam\\Desktop\\chromedriver_win32\\chromedriver.exe");
+        //WebDriver driver = new FirefoxDriver();
+
+        WebDriver driver = new ChromeDriver();
         return  driver;
     }
 
@@ -42,36 +49,29 @@ public class DataSource {
     }
 
     public void mainSuite(WebDriver driver) throws FileNotFoundException, IOException, InterruptedException {
+        WebDriverWait wait = new WebDriverWait(driver,30);
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(enter)));
+            WebElement result = driver.findElement(By.xpath(enter));
+            result.click();
+
+        } catch (Exception e) {
+            throw e;
+        }
 
         try {
-            WebElement result = driver.findElement(By.xpath(enter));
-            if (result == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            } else {
-                result.click();
-            }
-        } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        }
-        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(ecp)));
             WebElement entertwo =  driver.findElement(By.xpath(ecp));
-            if (entertwo == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            } else {
-                entertwo.click();
-            }
+            entertwo.click();
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            throw e;
         }
         try {
-            WebElement certChoose = driver.findElement(By.xpath(chooseSertificate));
-            if (certChoose == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            } else {
-                certChoose.click();
-            }
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(chooseSertificate)));
+            WebElement certChoose = driver.findElement(By.cssSelector(chooseSertificate));
+            certChoose.click();
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            throw e;
         }
 
 
@@ -86,117 +86,81 @@ public class DataSource {
             e.printStackTrace();
         }
         String password = prop.getProperty("pass");
-        Thread.sleep(4000);
         //driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         //WebElement enterPass = driver.findElement(By.xpath(enterPassword));
         //enterPass.sendKeys(password);
         try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(enterPassword)));
             WebElement enterPass = driver.findElement(By.xpath(enterPassword));
-            if (enterPass == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            } else {
-                enterPass.sendKeys(password);
-            }
+            enterPass.click();
+            enterPass.sendKeys(password);
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            throw  e;
         }
         try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(enterXPath)));
             WebElement entering = driver.findElement(By.xpath(enterXPath));
-            if (entering == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                entering.click();
-            }
+            entering.click();
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+           throw e;
         }
         try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(enterThree)));
             WebElement enterT = driver.findElement(By.xpath(enterThree));
-            if (enterT == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                enterT.click();
-            }
+            enterT.click();
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        }
-        Thread.sleep(4000);
-        try {
-            WebElement address = driver.findElement(By.cssSelector(addressBook));
-            if (address == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                address.click();
-            }
-        } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            WebElement address = driver.findElement(By.cssSelector(addressBook));
-            address.click();
+           throw e;
         }
 
         try {
-            WebElement search = driver.findElement(By.cssSelector(searchButton));
-            if (search == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                search.click();
-            }
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(addressBook)));
+            WebElement address = driver.findElement(By.cssSelector(addressBook));
+            address.click();
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            throw e;
+        }
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(searchButton)));
             WebElement search = driver.findElement(By.cssSelector(searchButton));
             search.click();
+        } catch (Exception e) {
+            throw e;
         }
+
         driver.navigate().to(UrlForService);
 
         try {
-            WebElement service = driver.findElement(By.cssSelector(getOnlineService));
-            if (service == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                service.click();
-            }
-        } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(getOnlineService)));
             WebElement service = driver.findElement(By.cssSelector(getOnlineService));
             service.click();
+
+        } catch (Exception e) {
+            throw e;
         }
         try {
-            WebElement order = driver.findElement(By.cssSelector(orderService));
-            if (order == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                order.click();
-            }
-        } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(getOnlineService)));
             WebElement order = driver.findElement(By.cssSelector(orderService));
             order.click();
-        }
-        Thread.sleep(2500);
-        try {
-            WebElement ecp = driver.findElement(By.cssSelector(ecpOrder));
-            if (ecp == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                ecp.click();
-            }
+
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            throw e;
+        }
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(ecpOrder)));
             WebElement ecp = driver.findElement(By.cssSelector(ecpOrder));
             ecp.click();
-        }
-        Thread.sleep(2500);
-        try {
-            WebElement usb = driver.findElement(By.cssSelector(usbClick));
-            if (usb == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                usb.click();
-            }
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            throw e;
+        }
+
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(usbClick)));
             WebElement usb = driver.findElement(By.cssSelector(usbClick));
             usb.click();
+        } catch (Exception e) {
+            throw e;
         }
     }
     public void endScenario(WebDriver driver)throws FileNotFoundException, IOException, InterruptedException {
@@ -210,56 +174,28 @@ public class DataSource {
         }
         String secondPass = prop.getProperty("passTwo");
         try {
-            WebElement endInd = driver.findElement(By.cssSelector(passEnd));
-            if (endInd == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                endInd.click();
-                endInd.sendKeys(secondPass);
-            }
-        } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(passEnd)));
             WebElement endInd = driver.findElement(By.cssSelector(passEnd));
             endInd.click();
             endInd.sendKeys(secondPass);
+        } catch (Exception e) {
+            throw e;
         }
         try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(nextButton)));
             WebElement next = driver.findElement(By.cssSelector(nextButton));
-            if (next == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                next.click();
-            }
-        } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            WebElement next= driver.findElement(By.cssSelector(nextButton));
             next.click();
-        }
-        try {
-            WebElement next = driver.findElement(By.cssSelector(nextButton));
-            if (next == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                next.click();
-            }
         } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            WebElement next= driver.findElement(By.cssSelector(nextButton));
-            next.click();
-        }
-        try {
-            WebElement signButton = driver.findElement(By.className(sign));
-            if (signButton == null) {
-                driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            }else {
-                signButton.click();
-            }
-        } catch (Exception e) {
-            driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-            WebElement signButton= driver.findElement(By.className(sign));
-            signButton.click();
+            throw e;
         }
 
+        try {
+            wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(sign)));
+            WebElement signButton = driver.findElement(By.className(sign));
+            signButton.click();
+        } catch (Exception e) {
+            throw e;
+        }
 
     }
 
